@@ -2,22 +2,23 @@
 <html lang="zh">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Wink</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>wink</title>
 <style>
   :root {
-    /* ==== 核心：极致微透磨砂玻璃参数 ==== */
+    /* 动态计算屏幕真实高度，解决 Edge 遮挡问题 */
+    --app-height: 100vh; 
+
+    /* 极致微透磨砂玻璃参数 */
     --glass-bg: rgba(255, 255, 255, 0.15); 
     --glass-border: rgba(255, 255, 255, 0.35); 
     --glass-blur: blur(16px); 
     
     --font-scale: 1;
     --custom-bg: none; 
-    
-    /* 默认纸质宋体 */
     --ui-font: "Noto Serif SC", "Songti SC", "STSong", "SimSun", serif;
 
-    /* 默认春晖配色 */
+    /* 初始化默认变量 */
     --theme-bg: linear-gradient(145deg, #ECF9F0 0%, #C2E6D0 100%);
     --out-bg: #E1F0E7;
     --text-main: #2C4A3B;
@@ -31,12 +32,23 @@
 
   * { margin: 0; padding: 0; box-sizing: border-box; font-family: var(--ui-font) !important; -webkit-tap-highlight-color: transparent; }
 
-  body { background-color: var(--out-bg); display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; color: var(--text-main); transition: background-color 0.6s ease, color 0.6s ease; }
+  body { 
+    background-color: var(--out-bg); display: flex; justify-content: center; align-items: center; 
+    height: var(--app-height); /* 核心修复点 */
+    overflow: hidden; color: var(--text-main); transition: background-color 0.6s ease, color 0.6s ease; 
+  }
   body.fullscreen-mode { background-color: transparent; }
 
   /* 物理黑边外壳 */
-  .phone-hardware { position: relative; width: 360px; height: 780px; max-height: 95vh; background-color: #0A0A0C; border-radius: 48px; padding: 12px; box-shadow: 0 40px 80px rgba(0,0,0,0.2), inset 0 0 2px rgba(255,255,255,0.3); transition: all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); display: flex; flex-direction: column; }
-  body.fullscreen-mode .phone-hardware { width: 100vw; height: 100vh; max-width: 100vw; max-height: 100vh; border-radius: 0; padding: 0; box-shadow: none; background-color: transparent; }
+  .phone-hardware { 
+    position: relative; width: 360px; 
+    height: 780px; max-height: calc(var(--app-height) - 40px); /* 留点缝隙 */
+    background-color: #0A0A0C; border-radius: 48px; padding: 12px; 
+    box-shadow: 0 40px 80px rgba(0,0,0,0.2), inset 0 0 2px rgba(255,255,255,0.3); 
+    transition: all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); display: flex; flex-direction: column; 
+  }
+  /* 全屏模式完全撑满真实高度 */
+  body.fullscreen-mode .phone-hardware { width: 100vw; height: var(--app-height); max-width: 100vw; max-height: var(--app-height); border-radius: 0; padding: 0; box-shadow: none; background-color: transparent; }
 
   /* 内部屏幕 */
   .phone-screen { position: relative; width: 100%; height: 100%; border-radius: 36px; overflow: hidden; background-image: var(--custom-bg), var(--theme-bg); background-size: cover, cover; background-position: center, center; display: flex; flex-direction: column; transition: border-radius 0.6s ease; }
@@ -66,18 +78,29 @@
   .dock-container .app-label { display: none; }
   .dock-container .app-icon { margin-bottom: 0; }
 
-  /* 设置页面 */
+  /* ================= 设置页面 ================= */
   .app-screen { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: var(--theme-bg); z-index: 50; display: flex; flex-direction: column; padding: 70px 24px 30px; transform: translateX(100%); transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1); overflow-y: auto; }
   .app-screen.active { transform: translateX(0); }
-  .mega-back-btn { margin-bottom: 30px; cursor: pointer; opacity: 0.85; transition: opacity 0.2s, transform 0.2s; display: inline-block; }
+  
+  /* 包含 Settings 和 Save 的顶部 Header */
+  .settings-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+  .mega-back-btn { cursor: pointer; opacity: 0.85; transition: opacity 0.2s, transform 0.2s; display: inline-block; }
   .mega-back-btn:active { opacity: 0.5; transform: scale(0.96); }
   .mega-back-text { font-size: calc(42px * var(--font-scale)); font-weight: 700; letter-spacing: 1px; color: var(--text-main); line-height: 1; transition: font-size 0.3s;}
+  
+  /* 纯文本 Save 按钮 */
+  .save-text-btn { font-size: calc(18px * var(--font-scale)); font-weight: 700; color: var(--text-main); cursor: pointer; opacity: 0.8; transition: opacity 0.2s, transform 0.2s; letter-spacing: 0.5px; }
+  .save-text-btn:active { opacity: 0.5; transform: scale(0.92); }
 
   .setting-list { background: var(--glass-bg); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); border: 1px solid var(--glass-border); border-radius: 20px; padding: 10px 20px; display: flex; flex-direction: column; margin-bottom: 20px; }
   .setting-item { display: flex; justify-content: space-between; align-items: center; padding: 16px 0; font-size: calc(16px * var(--font-scale)); font-weight: 600; border-bottom: 1px solid rgba(255,255,255,0.3); transition: font-size 0.3s; }
   .setting-item:last-child { border-bottom: none; }
-  .action-btn { padding: 6px 14px; background: rgba(255,255,255,0.4); border: 1px solid var(--glass-border); border-radius: 12px; color: var(--text-main); font-weight: bold; cursor: pointer; font-size: calc(13px * var(--font-scale)); }
+  .action-btn { padding: 6px 14px; background: rgba(255,255,255,0.4); border: 1px solid var(--glass-border); border-radius: 12px; color: var(--text-main); font-weight: bold; cursor: pointer; font-size: calc(13px * var(--font-scale)); font-family: inherit; }
   .action-btn:active { background: rgba(255,255,255,0.6); }
+
+  /* 危险操作按钮 (清除数据) */
+  .danger-btn { background: rgba(255, 100, 100, 0.15); color: #c0392b; border-color: rgba(255, 100, 100, 0.3); }
+  .danger-btn:active { background: rgba(255, 100, 100, 0.3); }
 
   .theme-options { display: flex; gap: 12px; align-items: center; }
   .theme-circle { width: 28px; height: 28px; border-radius: 50%; cursor: pointer; position: relative; border: 2px solid rgba(255,255,255,0.8); transition: transform 0.2s; }
@@ -142,23 +165,26 @@
 
   /* 自定义字体列表项 */
   .custom-font-item { display: flex; gap: 8px; align-items: center; width: 100%; margin-bottom: 8px; }
-  .preset-btn { flex: 1; padding: 10px 14px; border-radius: 12px; border: 1px solid var(--glass-border); background: rgba(255,255,255,0.3); color: var(--text-main); cursor: pointer; font-size: calc(14px * var(--font-scale)); transition: background 0.2s; text-align: left; }
+  .preset-btn { flex: 1; padding: 10px 14px; border-radius: 12px; border: 1px solid var(--glass-border); background: rgba(255,255,255,0.3); color: var(--text-main); cursor: pointer; font-size: calc(14px * var(--font-scale)); transition: background 0.2s; text-align: left; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
   .preset-btn:hover { background: rgba(255,255,255,0.5); }
   .del-btn { background: rgba(255, 100, 100, 0.15); color: #c0392b; border: 1px solid rgba(255, 100, 100, 0.3); border-radius: 12px; width: 40px; height: 100%; cursor: pointer; font-weight: bold; font-size: 18px; transition: all 0.2s; display: flex; justify-content: center; align-items: center;}
   .del-btn:hover { background: rgba(255, 100, 100, 0.3); }
   .divider { text-align: center; font-size: 12px; opacity: 0.5; margin: 8px 0; font-weight: bold; }
-
 </style>
 </head>
+
 <body class="theme-spring"> 
 
   <div class="custom-toast" id="sysToast">提示信息</div>
 
+  <!-- 隐藏的文件导入框，用于导入数据备份 -->
+  <input type="file" id="importDataInput" accept=".json" style="display:none" onchange="handleImportData(event)">
+
   <div class="phone-hardware" id="phoneHardware">
     <div class="phone-screen" id="phoneScreen">
-      
       <div class="notch"></div>
 
+      <!-- ================= 主屏幕 ================= -->
       <div class="canvas" id="mainScreen">
         <div class="time-widget">
           <div class="time-display" id="time">00:00</div>
@@ -184,12 +210,20 @@
         </div>
       </div> 
 
+      <!-- ================= 设置页面 ================= -->
       <div class="app-screen" id="settingsScreen">
-        <div class="mega-back-btn" onclick="closeSettings()"><div class="mega-back-text">Settings</div></div>
+        
+        <!-- 包含 Settings 和 Save 的顶部 -->
+        <div class="settings-header">
+          <div class="mega-back-btn" onclick="closeSettings()"><div class="mega-back-text">Settings</div></div>
+          <div class="save-text-btn" onclick="saveGlobalConfig()">Save</div>
+        </div>
+
         <div class="setting-list">
           <div class="setting-item"><span>显示黑边外壳</span><label class="switch"><input type="checkbox" id="frameToggle" checked onchange="handleFrameToggle(this)"><span class="slider"></span></label></div>
-          <div class="setting-item"><span>全局字号缩放</span><input type="range" min="0.8" max="1.5" step="0.1" value="1" oninput="changeFontSize(this.value)"></div>
+          <div class="setting-item"><span>全局字号缩放</span><input type="range" id="fontScaleRange" min="0.8" max="1.5" step="0.1" value="1" oninput="changeFontSize(this.value)"></div>
         </div>
+        
         <div class="setting-list">
           <div class="setting-item">
             <span>基础系统配色</span>
@@ -201,14 +235,21 @@
           </div>
           <div class="setting-item"><span>屏幕壁纸</span><button class="action-btn" onclick="openModal('bgModal')">自定义</button></div>
           <div class="setting-item"><span>应用图标</span><button class="action-btn" onclick="openModal('iconModal')">更换</button></div>
-          <div class="setting-item"><span>系统字体</span><button class="action-btn" onclick="openModal('fontModal')">预设管理</button></div>
+          <div class="setting-item"><span>系统字体</span><button class="action-btn" onclick="openModal('fontModal')">预设与直链</button></div>
         </div>
+
+        <!-- 数据备份中心 -->
+        <div class="setting-list">
+          <div class="setting-item"><span>导出配置数据</span><button class="action-btn" onclick="exportData()">导出备份</button></div>
+          <div class="setting-item"><span>导入配置数据</span><button class="action-btn" onclick="document.getElementById('importDataInput').click()">选择文件</button></div>
+          <div class="setting-item"><span>格式化小手机</span><button class="action-btn danger-btn" onclick="clearData()">清除数据</button></div>
+        </div>
+
       </div> 
 
       <!-- 弹窗系统 -->
       <div class="modal-overlay" id="customModalOverlay">
         
-        <!-- 背景与图标弹窗保持不变 -->
         <div class="custom-modal" id="bgModal" style="display:none;">
           <div><h3>设定壁纸</h3><p>将覆盖在当前主题色上方</p></div>
           <input type="text" id="bgUrlInput" placeholder="输入图片直链">
@@ -216,7 +257,7 @@
           <div class="modal-actions">
             <button class="btn-reset" onclick="resetBg()">恢复默认主题色</button>
             <button class="btn-cancel" onclick="closeModal()">取消</button>
-            <button class="btn-confirm" onclick="applyCustomBg(document.getElementById('bgUrlInput').value)">确认</button>
+            <button class="btn-confirm" onclick="applyCustomBg(document.getElementById('bgUrlInput').value)">确认应用</button>
           </div>
         </div>
 
@@ -239,27 +280,19 @@
           <div class="modal-actions">
             <button class="btn-reset" onclick="resetIcon()">恢复原版线稿</button>
             <button class="btn-cancel" onclick="closeModal()">取消</button>
-            <button class="btn-confirm" onclick="applyCustomIcon(document.getElementById('iconUrlInput').value)">确认</button>
+            <button class="btn-confirm" onclick="applyCustomIcon(document.getElementById('iconUrlInput').value)">确认应用</button>
           </div>
         </div>
 
-        <!-- ==== 纯净版：只含 URL 输入和收藏夹的字体弹窗 ==== -->
         <div class="custom-modal" id="fontModal" style="display:none;">
           <div><h3>系统字体</h3><p>输入字体 URL 直链并保存为你的私人预设</p></div>
-
-          <!-- 动态生成的私人收藏夹 -->
           <div id="customFontsList"></div>
-
           <div class="divider">--- 新增字体预设 ---</div>
           <input type="text" id="fontNameInput" placeholder="给字体起个名字 (如: 像素风)">
-          <!-- 核心：恢复了大大方方的 URL 输入框！ -->
           <input type="text" id="fontUrlInput" placeholder="输入字体直链 (如: https://.../font.ttf)">
-          
           <div class="modal-actions">
-            <!-- 一键恢复默认字体的幽灵按钮 -->
             <button class="btn-reset" onclick="resetToDefaultFont()">恢复系统默认宋体</button>
             <button class="btn-cancel" onclick="closeModal()">取消</button>
-            <!-- 保存 URL 为预设并应用 -->
             <button class="btn-confirm" onclick="saveAndApplyCustomFont()">保存为预设并应用</button>
           </div>
         </div>
@@ -269,7 +302,15 @@
   </div> 
 
   <script>
-    // 通知 Toast
+    // ==== 1. 动态获取真实高度解决 Edge 地址栏遮挡 ====
+    function setAppHeight() {
+      // 获取手机浏览器的真实内屏高度
+      document.documentElement.style.setProperty('--app-height', `${window.innerHeight}px`);
+    }
+    window.addEventListener('resize', setAppHeight);
+    setAppHeight(); // 立即执行一次
+
+    // ==== 2. Toast 悬浮提示 ====
     let toastTimeout;
     function showToast(msg) {
       const toast = document.getElementById('sysToast');
@@ -277,6 +318,152 @@
       clearTimeout(toastTimeout);
       toastTimeout = setTimeout(() => { toast.classList.remove('show'); }, 2500); 
     }
+
+    // ==== 3. 全局设置持久化 (加载与保存) ====
+    
+    // 初始化时，尝试从本地读取之前保存的配置
+    function loadGlobalConfig() {
+      try {
+        const confStr = localStorage.getItem('myOS_config');
+        if(!confStr) return; // 如果没有存过，就用默认的
+        
+        const config = JSON.parse(confStr);
+        
+        // 恢复黑边开关
+        const frameToggle = document.getElementById('frameToggle');
+        frameToggle.checked = config.frameOn !== false; 
+        handleFrameToggle(frameToggle);
+
+        // 恢复字号
+        if(config.fontScale) {
+          document.getElementById('fontScaleRange').value = config.fontScale;
+          changeFontSize(config.fontScale);
+        }
+
+        // 恢复主题配色
+        if(config.theme) switchTheme(config.theme);
+
+        // 恢复壁纸
+        if(config.customBg) document.documentElement.style.setProperty('--custom-bg', config.customBg);
+
+        // 恢复当前全局字体
+        if(config.uiFont) {
+          // 如果字体属于用户自定义收藏夹的，需要把 @font-face 注入回来
+          let savedFonts = JSON.parse(localStorage.getItem('myOS_customFonts')) || [];
+          let fontIdObj = savedFonts.find(f => config.uiFont.includes(f.id));
+          if(fontIdObj) {
+            let styleId = 'style_' + fontIdObj.id;
+            if(!document.getElementById(styleId)) {
+              let style = document.createElement('style'); style.id = styleId;
+              style.textContent = `@font-face { font-family: '${fontIdObj.id}'; src: url('${fontIdObj.url}'); }`;
+              document.head.appendChild(style);
+            }
+          }
+          document.documentElement.style.setProperty('--ui-font', config.uiFont);
+        }
+
+        // 恢复自定义图标
+        if(config.customIcons) {
+          for(let appId in config.customIcons) {
+            const url = config.customIcons[appId];
+            if(url) {
+              const container = document.getElementById(appId);
+              if(container) {
+                container.querySelector('.custom-icon-img').src = url;
+                container.querySelector('.custom-icon-img').style.display = 'block';
+                container.querySelector('svg').style.display = 'none';
+              }
+            }
+          }
+        }
+      } catch (e) {
+        console.error("加载配置失败", e);
+      }
+    }
+
+    // 点击 Save 按钮执行保存
+    function saveGlobalConfig() {
+      // 收集目前 UI 上的各种状态
+      const config = {
+        frameOn: document.getElementById('frameToggle').checked,
+        fontScale: document.getElementById('fontScaleRange').value,
+        theme: Array.from(document.body.classList).find(c => c.startsWith('theme-')) || 'theme-spring',
+        customBg: getComputedStyle(document.documentElement).getPropertyValue('--custom-bg').trim(),
+        uiFont: getComputedStyle(document.documentElement).getPropertyValue('--ui-font').trim(),
+        customIcons: {}
+      };
+
+      // 收集所有替换过的图标的 src
+      const allAppIds = ['icon-chat', 'icon-set', 'icon-echo', 'icon-vow', 'icon-mp3', 'icon-spy'];
+      allAppIds.forEach(id => {
+        const img = document.getElementById(id).querySelector('.custom-icon-img');
+        // 只有在 display block 时证明这个图片正在被使用
+        if(img.style.display === 'block' && img.src) {
+          config.customIcons[id] = img.src;
+        }
+      });
+
+      // 存入浏览器本地
+      localStorage.setItem('myOS_config', JSON.stringify(config));
+      showToast("已保存你的专属设置 ✨");
+    }
+
+    // 页面加载完毕后立刻读取配置
+    window.addEventListener('DOMContentLoaded', () => {
+      loadGlobalConfig();
+      renderSavedFonts(); // 顺便渲染字体收藏夹
+    });
+
+    // ==== 4. 数据备份与恢复 (导入导出) ====
+    
+    function exportData() {
+      const allData = {
+        config: JSON.parse(localStorage.getItem('myOS_config') || '{}'),
+        fonts: JSON.parse(localStorage.getItem('myOS_customFonts') || '[]')
+      };
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(allData));
+      const downloadAnchorNode = document.createElement('a');
+      downloadAnchorNode.setAttribute("href", dataStr);
+      downloadAnchorNode.setAttribute("download", "wink_os_backup.json");
+      document.body.appendChild(downloadAnchorNode);
+      downloadAnchorNode.click();
+      downloadAnchorNode.remove();
+      showToast("已生成配置备份文件 📦");
+    }
+
+    function handleImportData(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          try {
+            const importedData = JSON.parse(e.target.result);
+            if(importedData.config) localStorage.setItem('myOS_config', JSON.stringify(importedData.config));
+            if(importedData.fonts) localStorage.setItem('myOS_customFonts', JSON.stringify(importedData.fonts));
+            showToast("配置导入成功，正在重启... 🚀");
+            setTimeout(() => { location.reload(); }, 1500); // 刷新页面应用新配置
+          } catch(err) {
+            showToast("导入失败，文件格式可能不正确 🥺");
+          }
+        };
+        reader.readAsText(file);
+      }
+      // 清空 input，允许连续导入同一个文件
+      event.target.value = '';
+    }
+
+    function clearData() {
+      // 询问一下防止误触
+      if(confirm("确定要格式化 wink小手机 吗？所有的设置、壁纸、图标和字体收藏都会被抹除哦！🥺")) {
+        localStorage.removeItem('myOS_config');
+        localStorage.removeItem('myOS_customFonts');
+        showToast("已清理数据，正在恢复出厂设置... 🧹");
+        setTimeout(() => { location.reload(); }, 1500);
+      }
+    }
+
+
+    // ==== 以下是常规操作逻辑 (维持原样) ====
 
     // 时间逻辑
     function updateTime() {
@@ -286,7 +473,6 @@
     }
     updateTime(); setInterval(updateTime, 1000);
 
-    // 基础交互
     function openSettings() { document.getElementById('settingsScreen').classList.add('active'); }
     function closeSettings() { document.getElementById('settingsScreen').classList.remove('active'); }
     function handleFrameToggle(cb) { document.body.classList.toggle('fullscreen-mode', !cb.checked); }
@@ -295,7 +481,6 @@
     function openModal(id) { document.getElementById('customModalOverlay').classList.add('active'); ['bgModal', 'iconModal', 'fontModal'].forEach(m => document.getElementById(m).style.display = 'none'); document.getElementById(id).style.display = 'flex'; }
     function closeModal() { document.getElementById('customModalOverlay').classList.remove('active'); }
 
-    // 下拉菜单
     const selectSelected = document.querySelector('.select-selected');
     const selectItems = document.querySelector('.select-items');
     const hiddenInput = document.getElementById('iconAppSelectValue');
@@ -303,19 +488,17 @@
     selectItems.querySelectorAll('div').forEach(item => { item.addEventListener('click', function(e) { selectSelected.innerHTML = this.innerHTML + "::after"; selectSelected.textContent = this.textContent; hiddenInput.value = this.getAttribute('data-value'); selectItems.classList.add('select-hide'); }); });
     document.addEventListener('click', () => { selectItems.classList.add('select-hide'); });
 
-    // 文件上传处理 (壁纸/图标)
     function handleFileUpload(event, callback) { const file = event.target.files[0]; if (file) { const reader = new FileReader(); reader.onload = (e) => callback(e.target.result); reader.readAsDataURL(file); } }
-    function applyCustomBg(url) { if(!url) { showToast("宝宝，壁纸链接不能为空哦！🥺"); return; } document.documentElement.style.setProperty('--custom-bg', `url('${url}')`); document.getElementById('bgUrlInput').value = ''; closeModal(); showToast("壁纸设置成功！✨");}
-    function resetBg() { document.documentElement.style.setProperty('--custom-bg', 'none'); closeModal(); showToast("已恢复默认主题色 🎨");}
-    function applyCustomIcon(url) { if(!url) { showToast("宝宝，图标链接不能为空哦！🥺"); return; } const appId = hiddenInput.value; const iconContainer = document.getElementById(appId); iconContainer.querySelector('.custom-icon-img').src = url; iconContainer.querySelector('.custom-icon-img').style.display = 'block'; iconContainer.querySelector('svg').style.display = 'none'; document.getElementById('iconUrlInput').value = ''; closeModal(); showToast("图标定制成功！✨");}
-    function resetIcon() { const appId = hiddenInput.value; const iconContainer = document.getElementById(appId); iconContainer.querySelector('.custom-icon-img').src = ''; iconContainer.querySelector('.custom-icon-img').style.display = 'none'; iconContainer.querySelector('svg').style.display = 'block'; closeModal(); showToast("已恢复原版线稿 ✏️");}
+    
+    function applyCustomBg(url) { if(!url) { showToast("宝宝，壁纸链接不能为空哦！🥺"); return; } document.documentElement.style.setProperty('--custom-bg', `url('${url}')`); document.getElementById('bgUrlInput').value = ''; closeModal(); showToast("壁纸已临时应用，别忘了点Save保存哦！✨");}
+    function resetBg() { document.documentElement.style.setProperty('--custom-bg', 'none'); closeModal(); showToast("已恢复默认主题色，记得Save哦 🎨");}
+    
+    function applyCustomIcon(url) { if(!url) { showToast("宝宝，图标链接不能为空哦！🥺"); return; } const appId = hiddenInput.value; const iconContainer = document.getElementById(appId); iconContainer.querySelector('.custom-icon-img').src = url; iconContainer.querySelector('.custom-icon-img').style.display = 'block'; iconContainer.querySelector('svg').style.display = 'none'; document.getElementById('iconUrlInput').value = ''; closeModal(); showToast("图标更换成功，记得Save哦！✨");}
+    function resetIcon() { const appId = hiddenInput.value; const iconContainer = document.getElementById(appId); iconContainer.querySelector('.custom-icon-img').src = ''; iconContainer.querySelector('.custom-icon-img').style.display = 'none'; iconContainer.querySelector('svg').style.display = 'block'; closeModal(); showToast("已恢复线稿，记得Save哦 ✏️");}
 
-    // ================= 纯净的 URL 字体收藏夹系统 =================
-
-    let savedFonts = [];
-    try { savedFonts = JSON.parse(localStorage.getItem('myOS_customFonts')) || []; } catch(e) { savedFonts = []; }
-
+    // ==== 字体收藏夹系统 ====
     function renderSavedFonts() {
+      let savedFonts = JSON.parse(localStorage.getItem('myOS_customFonts')) || [];
       const listContainer = document.getElementById('customFontsList');
       if(!listContainer) return;
       listContainer.innerHTML = ''; 
@@ -327,26 +510,20 @@
 
       savedFonts.forEach((fontObj, index) => {
         let itemDiv = document.createElement('div'); itemDiv.className = 'custom-font-item';
-        
         let btn = document.createElement('button'); btn.className = 'preset-btn'; btn.textContent = '⭐ ' + fontObj.name;
-        btn.onclick = () => { applySavedFont(fontObj); showToast("已应用字体：" + fontObj.name); };
+        btn.onclick = () => { applySavedFont(fontObj); showToast("已应用字体：" + fontObj.name + "，记得Save哦！"); };
         
         let delBtn = document.createElement('button'); delBtn.className = 'del-btn'; delBtn.innerHTML = '×'; delBtn.title = "删除预设";
         delBtn.onclick = () => deleteSavedFont(index);
-        
         itemDiv.appendChild(btn); itemDiv.appendChild(delBtn); listContainer.appendChild(itemDiv);
       });
     }
 
-    // 保存 URL 预设并应用
     function saveAndApplyCustomFont() {
+      let savedFonts = JSON.parse(localStorage.getItem('myOS_customFonts')) || [];
       let nameInput = document.getElementById('fontNameInput').value.trim();
       let urlInput = document.getElementById('fontUrlInput').value.trim();
-      
-      if(!urlInput) {
-        showToast("宝宝，需要填入字体直链才能保存哦！🥺");
-        return;
-      }
+      if(!urlInput) { showToast("宝宝，需要填入字体直链才能保存哦！🥺"); return; }
       
       let fontName = nameInput || ('自定义字体 ' + (savedFonts.length + 1));
       let fontId = 'CustomFont_' + Date.now(); 
@@ -354,47 +531,34 @@
       
       savedFonts.push(newFontObj);
       localStorage.setItem('myOS_customFonts', JSON.stringify(savedFonts));
+      document.getElementById('fontNameInput').value = ''; document.getElementById('fontUrlInput').value = '';
       
-      document.getElementById('fontNameInput').value = ''; 
-      document.getElementById('fontUrlInput').value = '';
-      
-      renderSavedFonts(); 
-      applySavedFont(newFontObj);
-      showToast("URL 预设保存并应用成功！🎉");
+      renderSavedFonts(); applySavedFont(newFontObj);
+      showToast("URL预设存好了，别忘了点屏幕右上角的Save保存全局设置哦！🎉");
     }
 
-    // 通过预设对象的 URL 注入字体
     function applySavedFont(fontObj) {
       let styleId = 'style_' + fontObj.id;
       if(!document.getElementById(styleId)) {
-        let style = document.createElement('style'); 
-        style.id = styleId;
-        // 核心注入：用直链下载字体
+        let style = document.createElement('style'); style.id = styleId;
         style.textContent = `@font-face { font-family: '${fontObj.id}'; src: url('${fontObj.url}'); }`;
         document.head.appendChild(style);
       }
-      // 强制全局使用，如果下载失败则回退到宋体
       document.documentElement.style.setProperty('--ui-font', `'${fontObj.id}', "Noto Serif SC", serif`);
       closeModal();
     }
 
-    // 一键恢复默认宋体
     function resetToDefaultFont() {
-      // 移除刚才强制加进去的变量，恢复 CSS 中的 default 值
       document.documentElement.style.setProperty('--ui-font', '"Noto Serif SC", "Songti SC", "STSong", "SimSun", serif');
-      closeModal();
-      showToast("已恢复极简宋体美学 📖");
+      closeModal(); showToast("已恢复极简宋体美学，记得Save哦 📖");
     }
 
     function deleteSavedFont(index) {
+      let savedFonts = JSON.parse(localStorage.getItem('myOS_customFonts')) || [];
       savedFonts.splice(index, 1);
       localStorage.setItem('myOS_customFonts', JSON.stringify(savedFonts));
-      renderSavedFonts(); 
-      showToast("已删除该预设 🗑️");
+      renderSavedFonts(); showToast("已删除该预设 🗑️");
     }
-
-    // 初始化渲染收藏夹
-    renderSavedFonts();
   </script>
 </body>
 </html>
