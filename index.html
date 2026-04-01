@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>wink</title>
+<title>wink小手机</title>
 <style>
   :root {
     /* 动态计算屏幕真实高度，解决 Edge 遮挡问题 */
@@ -47,7 +47,6 @@
     box-shadow: 0 40px 80px rgba(0,0,0,0.2), inset 0 0 2px rgba(255,255,255,0.3); 
     transition: all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); display: flex; flex-direction: column; 
   }
-  /* 全屏模式完全撑满真实高度 */
   body.fullscreen-mode .phone-hardware { width: 100vw; height: var(--app-height); max-width: 100vw; max-height: var(--app-height); border-radius: 0; padding: 0; box-shadow: none; background-color: transparent; }
 
   /* 内部屏幕 */
@@ -145,7 +144,7 @@
   .file-upload-btn { width: 100%; padding: 12px; background: rgba(255,255,255,0.5); border: 1px dashed var(--text-main); border-radius: 12px; text-align: center; font-weight: 600; color: var(--text-main); font-size: calc(14px * var(--font-scale)); pointer-events: none; }
 
   .modal-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
-  .modal-actions button { flex: 1; padding: 10px; border-radius: 12px; border: none; font-weight: bold; font-size: calc(14px * var(--font-scale)); cursor: pointer; transition: background 0.2s; min-width: 30%; }
+  .modal-actions button { flex: 1; padding: 10px; border-radius: 12px; border: none; font-weight: bold; font-size: calc(14px * var(--font-scale)); font-family: inherit; cursor: pointer; transition: background 0.2s; min-width: 30%; }
   .btn-reset { width: 100%; background: transparent; color: var(--text-main); border: 1px solid rgba(0,0,0,0.1); margin-bottom: 4px; }
   .btn-cancel { background: rgba(255,255,255,0.3); color: var(--text-main); border: 1px solid var(--glass-border); }
   .btn-confirm { background: var(--text-main); color: #FFF; }
@@ -170,6 +169,7 @@
   .del-btn { background: rgba(255, 100, 100, 0.15); color: #c0392b; border: 1px solid rgba(255, 100, 100, 0.3); border-radius: 12px; width: 40px; height: 100%; cursor: pointer; font-weight: bold; font-size: 18px; transition: all 0.2s; display: flex; justify-content: center; align-items: center;}
   .del-btn:hover { background: rgba(255, 100, 100, 0.3); }
   .divider { text-align: center; font-size: 12px; opacity: 0.5; margin: 8px 0; font-weight: bold; }
+
 </style>
 </head>
 
@@ -177,8 +177,8 @@
 
   <div class="custom-toast" id="sysToast">提示信息</div>
 
-  <!-- 隐藏的文件导入框，用于导入数据备份 -->
-  <input type="file" id="importDataInput" accept=".json" style="display:none" onchange="handleImportData(event)">
+  <!-- 🌟 核心修复点：将 accept 设为 */* ，彻底解决安卓无法选中文件的问题 🌟 -->
+  <input type="file" id="importDataInput" accept="*/*" style="display:none" onchange="handleImportData(event)">
 
   <div class="phone-hardware" id="phoneHardware">
     <div class="phone-screen" id="phoneScreen">
@@ -213,7 +213,7 @@
       <!-- ================= 设置页面 ================= -->
       <div class="app-screen" id="settingsScreen">
         
-        <!-- 包含 Settings 和 Save 的顶部 -->
+        <!-- 包含 Settings 和 Save 的顶部 Header -->
         <div class="settings-header">
           <div class="mega-back-btn" onclick="closeSettings()"><div class="mega-back-text">Settings</div></div>
           <div class="save-text-btn" onclick="saveGlobalConfig()">Save</div>
@@ -304,7 +304,6 @@
   <script>
     // ==== 1. 动态获取真实高度解决 Edge 地址栏遮挡 ====
     function setAppHeight() {
-      // 获取手机浏览器的真实内屏高度
       document.documentElement.style.setProperty('--app-height', `${window.innerHeight}px`);
     }
     window.addEventListener('resize', setAppHeight);
@@ -321,34 +320,27 @@
 
     // ==== 3. 全局设置持久化 (加载与保存) ====
     
-    // 初始化时，尝试从本地读取之前保存的配置
     function loadGlobalConfig() {
       try {
         const confStr = localStorage.getItem('myOS_config');
-        if(!confStr) return; // 如果没有存过，就用默认的
+        if(!confStr) return; 
         
         const config = JSON.parse(confStr);
         
-        // 恢复黑边开关
         const frameToggle = document.getElementById('frameToggle');
         frameToggle.checked = config.frameOn !== false; 
         handleFrameToggle(frameToggle);
 
-        // 恢复字号
         if(config.fontScale) {
           document.getElementById('fontScaleRange').value = config.fontScale;
           changeFontSize(config.fontScale);
         }
 
-        // 恢复主题配色
         if(config.theme) switchTheme(config.theme);
 
-        // 恢复壁纸
         if(config.customBg) document.documentElement.style.setProperty('--custom-bg', config.customBg);
 
-        // 恢复当前全局字体
         if(config.uiFont) {
-          // 如果字体属于用户自定义收藏夹的，需要把 @font-face 注入回来
           let savedFonts = JSON.parse(localStorage.getItem('myOS_customFonts')) || [];
           let fontIdObj = savedFonts.find(f => config.uiFont.includes(f.id));
           if(fontIdObj) {
@@ -362,7 +354,6 @@
           document.documentElement.style.setProperty('--ui-font', config.uiFont);
         }
 
-        // 恢复自定义图标
         if(config.customIcons) {
           for(let appId in config.customIcons) {
             const url = config.customIcons[appId];
@@ -381,9 +372,7 @@
       }
     }
 
-    // 点击 Save 按钮执行保存
     function saveGlobalConfig() {
-      // 收集目前 UI 上的各种状态
       const config = {
         frameOn: document.getElementById('frameToggle').checked,
         fontScale: document.getElementById('fontScaleRange').value,
@@ -393,25 +382,21 @@
         customIcons: {}
       };
 
-      // 收集所有替换过的图标的 src
       const allAppIds = ['icon-chat', 'icon-set', 'icon-echo', 'icon-vow', 'icon-mp3', 'icon-spy'];
       allAppIds.forEach(id => {
         const img = document.getElementById(id).querySelector('.custom-icon-img');
-        // 只有在 display block 时证明这个图片正在被使用
         if(img.style.display === 'block' && img.src) {
           config.customIcons[id] = img.src;
         }
       });
 
-      // 存入浏览器本地
       localStorage.setItem('myOS_config', JSON.stringify(config));
       showToast("已保存你的专属设置 ✨");
     }
 
-    // 页面加载完毕后立刻读取配置
     window.addEventListener('DOMContentLoaded', () => {
       loadGlobalConfig();
-      renderSavedFonts(); // 顺便渲染字体收藏夹
+      renderSavedFonts(); 
     });
 
     // ==== 4. 数据备份与恢复 (导入导出) ====
@@ -441,19 +426,17 @@
             if(importedData.config) localStorage.setItem('myOS_config', JSON.stringify(importedData.config));
             if(importedData.fonts) localStorage.setItem('myOS_customFonts', JSON.stringify(importedData.fonts));
             showToast("配置导入成功，正在重启... 🚀");
-            setTimeout(() => { location.reload(); }, 1500); // 刷新页面应用新配置
+            setTimeout(() => { location.reload(); }, 1500); 
           } catch(err) {
-            showToast("导入失败，文件格式可能不正确 🥺");
+            showToast("导入失败，选择的文件不是有效的备份文件 🥺");
           }
         };
         reader.readAsText(file);
       }
-      // 清空 input，允许连续导入同一个文件
       event.target.value = '';
     }
 
     function clearData() {
-      // 询问一下防止误触
       if(confirm("确定要格式化 wink小手机 吗？所有的设置、壁纸、图标和字体收藏都会被抹除哦！🥺")) {
         localStorage.removeItem('myOS_config');
         localStorage.removeItem('myOS_customFonts');
@@ -463,9 +446,8 @@
     }
 
 
-    // ==== 以下是常规操作逻辑 (维持原样) ====
+    // ==== 常规操作逻辑 ====
 
-    // 时间逻辑
     function updateTime() {
       const now = new Date();
       document.getElementById('time').textContent = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
