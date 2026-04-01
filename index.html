@@ -5,57 +5,29 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>wink小手机</title>
 <style>
-  :root {
-    --app-height: 100vh; 
-    --glass-bg: rgba(255, 255, 255, 0.15); 
-    --glass-border: rgba(255, 255, 255, 0.35); 
-    --glass-blur: blur(16px); 
-    --font-scale: 1;
-    --custom-bg: none; 
-    --ui-font: "Noto Serif SC", "Songti SC", "STSong", "SimSun", serif;
-    --theme-bg: linear-gradient(145deg, #ECF9F0 0%, #C2E6D0 100%);
-    --out-bg: #E1F0E7;
-    --text-main: #2C4A3B;
-    --text-light: #618973;
-    --accent: #2C4A3B;
-  }
-
+  :root { --app-height: 100vh; --glass-bg: rgba(255, 255, 255, 0.15); --glass-border: rgba(255, 255, 255, 0.35); --glass-blur: blur(16px); --font-scale: 1; --custom-bg: none; --ui-font: "Noto Serif SC", "Songti SC", "STSong", "SimSun", serif; --theme-bg: linear-gradient(145deg, #ECF9F0 0%, #C2E6D0 100%); --out-bg: #E1F0E7; --text-main: #2C4A3B; --text-light: #618973; --accent: #2C4A3B; }
   body.theme-silver { --theme-bg: linear-gradient(145deg, #F0F2F5 0%, #D8DFE5 100%); --out-bg: #E4E7EB; --text-main: #333A42; --text-light: #7A8593; --accent: #333A42; }
   body.theme-cream { --theme-bg: linear-gradient(145deg, #FDFDFB 0%, #F1ECE0 100%); --out-bg: #F5F2EB; --text-main: #4A3E35; --text-light: #8E8071; --accent: #4A3E35; }
   body.theme-spring { --theme-bg: linear-gradient(145deg, #ECF9F0 0%, #C2E6D0 100%); --out-bg: #E1F0E7; --text-main: #2C4A3B; --text-light: #618973; --accent: #2C4A3B; }
 
   * { margin: 0; padding: 0; box-sizing: border-box; font-family: var(--ui-font) !important; -webkit-tap-highlight-color: transparent; }
-
-  body { 
-    background-color: var(--out-bg); display: flex; justify-content: center; align-items: center; 
-    height: var(--app-height); 
-    overflow: hidden; color: var(--text-main); transition: background-color 0.6s ease, color 0.6s ease; 
-  }
+  body { background-color: var(--out-bg); display: flex; justify-content: center; align-items: center; height: var(--app-height); overflow: hidden; color: var(--text-main); transition: background-color 0.6s ease, color 0.6s ease; }
   body.fullscreen-mode { background-color: transparent; }
 
-  .phone-hardware { 
-    position: relative; width: 360px; 
-    height: 780px; max-height: calc(var(--app-height) - 40px);
-    background-color: #0A0A0C; border-radius: 48px; padding: 12px; 
-    box-shadow: 0 40px 80px rgba(0,0,0,0.2), inset 0 0 2px rgba(255,255,255,0.3); 
-    transition: all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); display: flex; flex-direction: column; 
-  }
+  .phone-hardware { position: relative; width: 360px; height: 780px; max-height: calc(var(--app-height) - 40px); background-color: #0A0A0C; border-radius: 48px; padding: 12px; box-shadow: 0 40px 80px rgba(0,0,0,0.2), inset 0 0 2px rgba(255,255,255,0.3); transition: all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); display: flex; flex-direction: column; }
   body.fullscreen-mode .phone-hardware { width: 100vw; height: var(--app-height); max-width: 100vw; max-height: var(--app-height); border-radius: 0; padding: 0; box-shadow: none; background-color: transparent; }
-
+  
   .phone-screen { position: relative; width: 100%; height: 100%; border-radius: 36px; overflow: hidden; background-image: var(--custom-bg), var(--theme-bg); background-size: cover, cover; background-position: center, center; display: flex; flex-direction: column; transition: border-radius 0.6s ease; }
   .phone-screen::before { content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: var(--theme-bg); z-index: -1; transition: opacity 0.6s; }
   body.fullscreen-mode .phone-screen { border-radius: 0; }
 
-  .notch { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); width: 110px; height: 30px; background-color: #000; border-radius: 20px; z-index: 1000; }
-
   .canvas { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 80px 24px 30px; position: relative; z-index: 10; }
   .time-widget { display: flex; flex-direction: column; align-items: center; margin-bottom: 40px; }
-  .time-display { font-size: calc(64px * var(--font-scale)); font-weight: 500; letter-spacing: 2px; line-height: 1; margin-bottom: 12px; transition: font-size 0.3s;}
-  .date-display { font-size: calc(14px * var(--font-scale)); font-weight: 600; color: var(--text-light); letter-spacing: 1px; transition: font-size 0.3s;}
+  .time-display { font-size: calc(64px * var(--font-scale)); font-weight: 500; letter-spacing: 2px; line-height: 1; margin-bottom: 12px; transition: font-size 0.3s; }
+  .date-display { font-size: calc(14px * var(--font-scale)); font-weight: 600; color: var(--text-light); letter-spacing: 1px; transition: font-size 0.3s; }
 
   .apps-container { width: 100%; }
   .app-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px 12px; justify-items: center; }
-
   .dock-container { margin-top: auto; width: 100%; background: var(--glass-bg); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); border: 1px solid var(--glass-border); border-radius: 28px; padding: 16px 12px; }
   .dock-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; justify-items: center; }
 
@@ -65,19 +37,16 @@
   .app-item:hover .app-icon { background: rgba(255, 255, 255, 0.3); transform: scale(0.96); }
   .app-icon svg { width: 24px; height: 24px; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; fill: none; position: relative; z-index: 2; }
   .custom-icon-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 3; display: none; }
-  .app-label { font-size: calc(12px * var(--font-scale)); font-weight: 600; color: var(--text-main); transition: font-size 0.3s;}
+  .app-label { font-size: calc(12px * var(--font-scale)); font-weight: 600; color: var(--text-main); transition: font-size 0.3s; }
   .dock-container .app-label { display: none; }
   .dock-container .app-icon { margin-bottom: 0; }
 
-  /* ================= 设置页面 ================= */
   .app-screen { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: var(--theme-bg); z-index: 50; display: flex; flex-direction: column; padding: 70px 24px 30px; transform: translateX(100%); transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1); overflow-y: auto; }
   .app-screen.active { transform: translateX(0); }
-  
   .settings-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
   .mega-back-btn { cursor: pointer; opacity: 0.85; transition: opacity 0.2s, transform 0.2s; display: inline-block; }
   .mega-back-btn:active { opacity: 0.5; transform: scale(0.96); }
-  .mega-back-text { font-size: calc(42px * var(--font-scale)); font-weight: 700; letter-spacing: 1px; color: var(--text-main); line-height: 1; transition: font-size 0.3s;}
-  
+  .mega-back-text { font-size: calc(42px * var(--font-scale)); font-weight: 700; letter-spacing: 1px; color: var(--text-main); line-height: 1; transition: font-size 0.3s; }
   .save-text-btn { font-size: calc(18px * var(--font-scale)); font-weight: 700; color: var(--text-main); cursor: pointer; opacity: 0.8; transition: opacity 0.2s, transform 0.2s; letter-spacing: 0.5px; }
   .save-text-btn:active { opacity: 0.5; transform: scale(0.92); }
 
@@ -86,11 +55,10 @@
   .setting-item:last-child { border-bottom: none; }
   .action-btn { padding: 6px 14px; background: rgba(255,255,255,0.4); border: 1px solid var(--glass-border); border-radius: 12px; color: var(--text-main); font-weight: bold; cursor: pointer; font-size: calc(13px * var(--font-scale)); font-family: inherit; }
   .action-btn:active { background: rgba(255,255,255,0.6); }
-
   .danger-btn { background: rgba(255, 100, 100, 0.15); color: #c0392b; border-color: rgba(255, 100, 100, 0.3); }
   .danger-btn:active { background: rgba(255, 100, 100, 0.3); }
 
-  .theme-options { display: flex; gap: 12px; align-items: center; }
+  .theme-options { display: flex; gap: 12px; align-items: center; justify-content: flex-end; }
   .theme-circle { width: 28px; height: 28px; border-radius: 50%; cursor: pointer; position: relative; border: 2px solid rgba(255,255,255,0.8); transition: transform 0.2s; }
   .theme-circle:active { transform: scale(0.8); }
   .color-silver { background: linear-gradient(145deg, #F0F2F5, #D8DFE5); }
@@ -109,14 +77,13 @@
   input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 6px; background: rgba(255,255,255,0.4); border-radius: 3px; }
   input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 18px; width: 18px; border-radius: 50%; background: var(--text-main); margin-top: -6px; cursor: pointer; }
 
-  /* 弹窗系统 */
   .modal-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.2); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 10000; display: none; justify-content: center; align-items: center; padding: 24px; opacity: 0; transition: opacity 0.3s; }
   .modal-overlay.active { display: flex; opacity: 1; }
   .custom-modal { width: 100%; background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid var(--glass-border); border-radius: 24px; padding: 24px; display: flex; flex-direction: column; gap: 16px; color: var(--text-main); box-shadow: 0 20px 40px rgba(0,0,0,0.1); transform: translateY(20px); transition: transform 0.3s; max-height: 85vh; overflow-y: auto; }
   .modal-overlay.active .custom-modal { transform: translateY(0); }
   .custom-modal h3 { font-size: calc(20px * var(--font-scale)); font-weight: 700; margin-bottom: 4px; }
   .custom-modal p { font-size: calc(13px * var(--font-scale)); opacity: 0.8; margin-bottom: 8px; }
-  .custom-modal input[type="text"] { width: 100%; padding: 12px 16px; border-radius: 12px; background: rgba(255,255,255,0.3); border: 1px solid var(--glass-border); color: var(--text-main); font-size: calc(14px * var(--font-scale)); outline: none; margin-bottom: 4px;}
+  .custom-modal input[type="text"] { width: 100%; padding: 12px 16px; border-radius: 12px; background: rgba(255,255,255,0.3); border: 1px solid var(--glass-border); color: var(--text-main); font-size: calc(14px * var(--font-scale)); outline: none; margin-bottom: 4px; }
   .custom-modal input[type="text"]::placeholder { color: var(--text-main); opacity: 0.5; }
   
   .custom-select { position: relative; width: 100%; }
@@ -141,14 +108,7 @@
   .btn-cancel:active { background: rgba(255,255,255,0.5); }
   .btn-confirm:active { opacity: 0.8; }
 
-  /* 悬浮通知 Toast */
-  .custom-toast {
-    position: fixed; top: 50px; left: 50%; transform: translate(-50%, -20px);
-    background: rgba(44, 74, 59, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-    color: #FFF; padding: 12px 24px; border-radius: 20px; font-size: 14px; font-weight: bold;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2); opacity: 0; pointer-events: none;
-    transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); z-index: 99999; letter-spacing: 0.5px;
-  }
+  .custom-toast { position: fixed; top: 50px; left: 50%; transform: translate(-50%, -20px); background: rgba(44, 74, 59, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); color: #FFF; padding: 12px 24px; border-radius: 20px; font-size: 14px; font-weight: bold; box-shadow: 0 10px 30px rgba(0,0,0,0.2); opacity: 0; pointer-events: none; transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); z-index: 99999; letter-spacing: 0.5px; }
   .custom-toast.show { transform: translate(-50%, 0); opacity: 1; }
 
   .custom-font-item { display: flex; gap: 8px; align-items: center; width: 100%; margin-bottom: 8px; }
@@ -161,15 +121,11 @@
 </head>
 
 <body class="theme-spring"> 
-
   <div class="custom-toast" id="sysToast">提示信息</div>
-
   <input type="file" id="importDataInput" accept="*/*" style="display:none" onchange="handleImportData(event)">
 
   <div class="phone-hardware" id="phoneHardware">
     <div class="phone-screen" id="phoneScreen">
-      <div class="notch"></div>
-
       <!-- ================= 主屏幕 ================= -->
       <div class="canvas" id="mainScreen">
         <div class="time-widget">
@@ -179,10 +135,22 @@
 
         <div class="apps-container">
           <div class="app-grid">
-            <div class="app-item"><div class="app-icon" id="icon-chat"><img class="custom-icon-img" src=""><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></div><span class="app-label">Chat</span></div>
-            <div class="app-item" onclick="openSettings()"><div class="app-icon" id="icon-set"><img class="custom-icon-img" src=""><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></div><span class="app-label">Settings</span></div>
-            <div class="app-item"><div class="app-icon" id="icon-echo"><img class="custom-icon-img" src=""><svg viewBox="0 0 24 24"><path d="M12 2v20M17 5v14M7 5v14M22 10v4M2 10v4"></path></svg></div><span class="app-label">Echo</span></div>
-            <div class="app-item"><div class="app-icon" id="icon-vow"><img class="custom-icon-img" src=""><svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path><path d="M12 11v4M10 13h4"></path></svg></div><span class="app-label">Vow</span></div>
+            <div class="app-item" onclick="openApp('chat')">
+              <div class="app-icon" id="icon-chat"><img class="custom-icon-img" src=""><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></div>
+              <span class="app-label">Chat</span>
+            </div>
+            <div class="app-item" onclick="openSettings()">
+              <div class="app-icon" id="icon-set"><img class="custom-icon-img" src=""><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></div>
+              <span class="app-label">Settings</span>
+            </div>
+            <div class="app-item">
+              <div class="app-icon" id="icon-echo"><img class="custom-icon-img" src=""><svg viewBox="0 0 24 24"><path d="M12 2v20M17 5v14M7 5v14M22 10v4M2 10v4"></path></svg></div>
+              <span class="app-label">Echo</span>
+            </div>
+            <div class="app-item">
+              <div class="app-icon" id="icon-vow"><img class="custom-icon-img" src=""><svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path><path d="M12 11v4M10 13h4"></path></svg></div>
+              <span class="app-label">Vow</span>
+            </div>
           </div>
         </div>
 
@@ -196,23 +164,28 @@
         </div>
       </div> 
 
-      <!-- ================= 设置页面 ================= -->
+      <!-- ================= 动态应用容器 ================= -->
+      <div class="app-screen" id="dynamicAppContainer">
+        <div class="settings-header">
+          <div class="mega-back-btn" onclick="closeDynamicApp()"><div class="mega-back-text" id="dynamicAppTitle">App</div></div>
+        </div>
+        <div id="dynamicAppContent" style="flex: 1; display: flex; flex-direction: column; overflow: hidden;"></div>
+      </div>
+
+      <!-- ================= 内置设置页面 ================= -->
       <div class="app-screen" id="settingsScreen">
-        
         <div class="settings-header">
           <div class="mega-back-btn" onclick="closeSettings()"><div class="mega-back-text">Settings</div></div>
           <div class="save-text-btn" onclick="saveGlobalConfig()">Save</div>
         </div>
-
         <div class="setting-list">
           <div class="setting-item"><span>显示黑边外壳</span><label class="switch"><input type="checkbox" id="frameToggle" checked onchange="handleFrameToggle(this)"><span class="slider"></span></label></div>
           <div class="setting-item"><span>全局字号缩放</span><input type="range" id="fontScaleRange" min="0.8" max="1.5" step="0.1" value="1" oninput="changeFontSize(this.value)"></div>
         </div>
-        
         <div class="setting-list">
-          <div class="setting-item">
-            <span>基础系统配色</span>
-            <div class="theme-options">
+          <div class="setting-item" style="flex-wrap: wrap;">
+            <span style="width: 100%; margin-bottom: 12px;">基础系统配色</span>
+            <div class="theme-options" style="width: 100%; justify-content: flex-start;">
               <div class="theme-circle color-silver" onclick="switchTheme('theme-silver')" title="银灰"></div>
               <div class="theme-circle color-cream" onclick="switchTheme('theme-cream')" title="奶白"></div>
               <div class="theme-circle color-spring" onclick="switchTheme('theme-spring')" title="春晖"></div>
@@ -222,18 +195,15 @@
           <div class="setting-item"><span>应用图标</span><button class="action-btn" onclick="openModal('iconModal')">更换</button></div>
           <div class="setting-item"><span>系统字体</span><button class="action-btn" onclick="openModal('fontModal')">预设与直链</button></div>
         </div>
-
         <div class="setting-list">
           <div class="setting-item"><span>导出配置数据</span><button class="action-btn" onclick="exportData()">导出备份</button></div>
           <div class="setting-item"><span>导入配置数据</span><button class="action-btn" onclick="document.getElementById('importDataInput').click()">选择文件</button></div>
           <div class="setting-item"><span>格式化小手机</span><button class="action-btn danger-btn" onclick="clearData()">清除数据</button></div>
         </div>
-
       </div> 
 
       <!-- 弹窗系统 -->
       <div class="modal-overlay" id="customModalOverlay">
-        
         <div class="custom-modal" id="bgModal" style="display:none;">
           <div><h3>设定壁纸</h3><p>将覆盖在当前主题色上方</p></div>
           <input type="text" id="bgUrlInput" placeholder="输入图片直链">
@@ -272,55 +242,84 @@
           <div><h3>系统字体</h3><p>输入字体 URL 直链并保存为你的私人预设</p></div>
           <div id="customFontsList"></div>
           <div class="divider">--- 新增字体预设 ---</div>
-          <input type="text" id="fontNameInput" placeholder="给字体起个名字 (如: 像素风)">
-          <input type="text" id="fontUrlInput" placeholder="输入字体直链 (如: https://.../font.ttf)">
+          <input type="text" id="fontNameInput" placeholder="给字体起个名字 (如: 丑猫体)">
+          <input type="text" id="fontUrlInput" placeholder="必须是防跨域直链 (如 catbox.moe 链接)">
           <div class="modal-actions">
             <button class="btn-reset" onclick="resetToDefaultFont()">恢复系统默认宋体</button>
             <button class="btn-cancel" onclick="closeModal()">取消</button>
-            <button class="btn-confirm" onclick="saveAndApplyCustomFont()">保存为预设并应用</button>
+            <button class="btn-confirm" onclick="saveAndApplyCustomFont()">保存为预设</button>
           </div>
         </div>
-
       </div> 
     </div> 
   </div> 
 
   <script>
-    // ==== 1. 动态获取真实高度 ====
     function setAppHeight() { document.documentElement.style.setProperty('--app-height', `${window.innerHeight}px`); }
-    window.addEventListener('resize', setAppHeight); setAppHeight(); 
+    window.addEventListener('resize', setAppHeight); 
+    setAppHeight(); 
 
-    // ==== 2. Toast 悬浮提示 ====
     let toastTimeout;
     function showToast(msg) {
       const toast = document.getElementById('sysToast');
-      toast.textContent = msg; toast.classList.add('show');
+      toast.textContent = msg; 
+      toast.classList.add('show');
       clearTimeout(toastTimeout);
       toastTimeout = setTimeout(() => { toast.classList.remove('show'); }, 2500); 
     }
 
-    // ==== 3. 全局设置持久化 ====
+    // ================= 🌟 动态加载 APP 的引擎 🌟 =================
+    window.WinkApps = {}; 
+    
+    function openApp(appId) {
+      const container = document.getElementById('dynamicAppContainer');
+      const title = document.getElementById('dynamicAppTitle');
+      const content = document.getElementById('dynamicAppContent');
+      
+      title.textContent = appId.charAt(0).toUpperCase() + appId.slice(1);
+      container.classList.add('active');
+      content.innerHTML = `<div style="text-align:center; padding-top: 50px; opacity: 0.5;">正在启动 ${appId}... ⏳</div>`;
+
+      if (window.WinkApps[appId]) {
+        window.WinkApps[appId].render(content);
+        return;
+      }
+
+      const script = document.createElement('script');
+      script.src = `./app-${appId}.js`; 
+      script.onload = () => {
+        if (window.WinkApps[appId]) window.WinkApps[appId].render(content);
+        else content.innerHTML = `<div style="text-align:center; padding-top: 50px; color: #c0392b;">软件加载失败，代码未定义🥺</div>`;
+      };
+      script.onerror = () => {
+        content.innerHTML = `<div style="text-align:center; padding-top: 50px; color: #c0392b;">找不到该软件 (app-${appId}.js) 🥺<br>宝宝你是不是还没在 GitHub 里创建它呀？</div>`;
+      };
+      document.body.appendChild(script);
+    }
+
+    function closeDynamicApp() { document.getElementById('dynamicAppContainer').classList.remove('active'); }
+
+    // ========================================================
     function loadGlobalConfig() {
       try {
         const confStr = localStorage.getItem('myOS_config');
-        if(!confStr) return; 
-        
+        if (!confStr) return; 
         const config = JSON.parse(confStr);
         
         const frameToggle = document.getElementById('frameToggle');
         frameToggle.checked = config.frameOn !== false; 
         handleFrameToggle(frameToggle);
 
-        if(config.fontScale) { document.getElementById('fontScaleRange').value = config.fontScale; changeFontSize(config.fontScale); }
-        if(config.theme) switchTheme(config.theme);
-        if(config.customBg) document.documentElement.style.setProperty('--custom-bg', config.customBg);
+        if (config.fontScale) { document.getElementById('fontScaleRange').value = config.fontScale; changeFontSize(config.fontScale); }
+        if (config.theme) switchTheme(config.theme);
+        if (config.customBg) document.documentElement.style.setProperty('--custom-bg', config.customBg);
 
-        if(config.uiFont) {
+        if (config.uiFont) {
           let savedFonts = JSON.parse(localStorage.getItem('myOS_customFonts')) || [];
           let fontIdObj = savedFonts.find(f => config.uiFont.includes(f.id));
-          if(fontIdObj) {
+          if (fontIdObj) {
             let styleId = 'style_' + fontIdObj.id;
-            if(!document.getElementById(styleId)) {
+            if (!document.getElementById(styleId)) {
               let style = document.createElement('style'); style.id = styleId;
               style.textContent = `@font-face { font-family: '${fontIdObj.id}'; src: url('${fontIdObj.url}'); }`;
               document.head.appendChild(style);
@@ -329,12 +328,12 @@
           document.documentElement.style.setProperty('--ui-font', config.uiFont);
         }
 
-        if(config.customIcons) {
-          for(let appId in config.customIcons) {
+        if (config.customIcons) {
+          for (let appId in config.customIcons) {
             const url = config.customIcons[appId];
-            if(url) {
+            if (url) {
               const container = document.getElementById(appId);
-              if(container) {
+              if (container) {
                 container.querySelector('.custom-icon-img').src = url;
                 container.querySelector('.custom-icon-img').style.display = 'block';
                 container.querySelector('svg').style.display = 'none';
@@ -354,43 +353,31 @@
         uiFont: getComputedStyle(document.documentElement).getPropertyValue('--ui-font').trim(),
         customIcons: {}
       };
-
+      
       const allAppIds = ['icon-chat', 'icon-set', 'icon-echo', 'icon-vow', 'icon-mp3', 'icon-spy'];
       allAppIds.forEach(id => {
         const img = document.getElementById(id).querySelector('.custom-icon-img');
-        if(img.style.display === 'block' && img.src) { config.customIcons[id] = img.src; }
+        if (img.style.display === 'block' && img.src) config.customIcons[id] = img.src; 
       });
-
+      
       localStorage.setItem('myOS_config', JSON.stringify(config));
       showToast("已保存你的专属设置 ✨");
     }
 
-    window.addEventListener('DOMContentLoaded', () => {
-      loadGlobalConfig();
-      renderSavedFonts(); 
-    });
+    window.addEventListener('DOMContentLoaded', () => { loadGlobalConfig(); renderSavedFonts(); });
 
-    // ==== 4. 数据备份与恢复 (终极修复版 Blob) ====
-    
     function exportData() {
-      const allData = {
-        config: JSON.parse(localStorage.getItem('myOS_config') || '{}'),
-        fonts: JSON.parse(localStorage.getItem('myOS_customFonts') || '[]')
-      };
-      
-      // 🚀 核心修复：使用 Blob 二进制流构建文件，彻底解决文件过大被截断导致损坏的问题！
-      const jsonStr = JSON.stringify(allData);
-      const blob = new Blob([jsonStr], { type: "application/json" });
+      const allData = { config: JSON.parse(localStorage.getItem('myOS_config') || '{}'), fonts: JSON.parse(localStorage.getItem('myOS_customFonts') || '[]') };
+      const jsonStr = JSON.stringify(allData); 
+      const blob = new Blob([jsonStr], { type: "application/json" }); 
       const url = URL.createObjectURL(blob);
-      
-      const downloadAnchorNode = document.createElement('a');
-      downloadAnchorNode.setAttribute("href", url);
+      const downloadAnchorNode = document.createElement('a'); 
+      downloadAnchorNode.setAttribute("href", url); 
       downloadAnchorNode.setAttribute("download", "wink_os_backup.json");
-      document.body.appendChild(downloadAnchorNode);
-      downloadAnchorNode.click();
-      document.body.removeChild(downloadAnchorNode);
-      URL.revokeObjectURL(url); // 释放内存
-      
+      document.body.appendChild(downloadAnchorNode); 
+      downloadAnchorNode.click(); 
+      document.body.removeChild(downloadAnchorNode); 
+      URL.revokeObjectURL(url);
       showToast("已生成配置备份文件 📦");
     }
 
@@ -400,16 +387,12 @@
         const reader = new FileReader();
         reader.onload = (e) => {
           try {
-            // 解析时去除前后多余的空白字符，增加安全性
             const importedData = JSON.parse(e.target.result.trim());
-            if(importedData.config) localStorage.setItem('myOS_config', JSON.stringify(importedData.config));
-            if(importedData.fonts) localStorage.setItem('myOS_customFonts', JSON.stringify(importedData.fonts));
-            showToast("配置导入成功，正在重启... 🚀");
+            if (importedData.config) localStorage.setItem('myOS_config', JSON.stringify(importedData.config));
+            if (importedData.fonts) localStorage.setItem('myOS_customFonts', JSON.stringify(importedData.fonts));
+            showToast("配置导入成功，正在重启... 🚀"); 
             setTimeout(() => { location.reload(); }, 1500); 
-          } catch(err) {
-            console.error("JSON 解析错误:", err);
-            showToast("导入失败，备份文件可能已损坏或不完整 🥺");
-          }
+          } catch(err) { showToast("导入失败，备份文件可能已损坏 🥺"); }
         };
         reader.readAsText(file);
       }
@@ -417,17 +400,22 @@
     }
 
     function clearData() {
-      if(confirm("确定要格式化 wink小手机 吗？所有的设置、壁纸、图标和字体收藏都会被抹除哦！🥺")) {
-        localStorage.removeItem('myOS_config');
+      if (confirm("确定要格式化 wink小手机 吗？所有的设置、壁纸、图标和字体收藏都会被抹除哦！🥺")) {
+        localStorage.removeItem('myOS_config'); 
         localStorage.removeItem('myOS_customFonts');
-        showToast("已清理数据，正在恢复出厂设置... 🧹");
+        showToast("已清理数据，正在恢复出厂设置... 🧹"); 
         setTimeout(() => { location.reload(); }, 1500);
       }
     }
 
-    // ==== 常规操作逻辑 ====
-    function updateTime() { const now = new Date(); document.getElementById('time').textContent = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`; document.getElementById('date').textContent = now.toLocaleDateString('zh-CN', { month: 'long', day: 'numeric', weekday: 'long' }); }
+    function updateTime() { 
+      const now = new Date(); 
+      document.getElementById('time').textContent = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`; 
+      document.getElementById('date').textContent = now.toLocaleDateString('zh-CN', { month: 'long', day: 'numeric', weekday: 'long' }); 
+    }
+    
     updateTime(); setInterval(updateTime, 1000);
+    
     function openSettings() { document.getElementById('settingsScreen').classList.add('active'); }
     function closeSettings() { document.getElementById('settingsScreen').classList.remove('active'); }
     function handleFrameToggle(cb) { document.body.classList.toggle('fullscreen-mode', !cb.checked); }
@@ -439,30 +427,78 @@
     const selectSelected = document.querySelector('.select-selected');
     const selectItems = document.querySelector('.select-items');
     const hiddenInput = document.getElementById('iconAppSelectValue');
+    
     selectSelected.addEventListener('click', function(e) { e.stopPropagation(); selectItems.classList.toggle('select-hide'); });
-    selectItems.querySelectorAll('div').forEach(item => { item.addEventListener('click', function(e) { selectSelected.innerHTML = this.innerHTML + "::after"; selectSelected.textContent = this.textContent; hiddenInput.value = this.getAttribute('data-value'); selectItems.classList.add('select-hide'); }); });
+    
+    // Bug 修复：解决下拉菜单选择时 innerHTML 冗余追加造成的隐藏逻辑错误
+    selectItems.querySelectorAll('div').forEach(item => { 
+      item.addEventListener('click', function(e) { 
+        selectSelected.textContent = this.textContent; 
+        hiddenInput.value = this.getAttribute('data-value'); 
+        selectItems.classList.add('select-hide'); 
+      }); 
+    });
     document.addEventListener('click', () => { selectItems.classList.add('select-hide'); });
 
-    function handleFileUpload(event, callback) { const file = event.target.files[0]; if (file) { const reader = new FileReader(); reader.onload = (e) => callback(e.target.result); reader.readAsDataURL(file); } }
+    // Bug 修复：增加 event.target.value = ''; 解决多次上传同一文件无反应的问题
+    function handleFileUpload(event, callback) { 
+      const file = event.target.files[0]; 
+      if (file) { 
+        const reader = new FileReader(); 
+        reader.onload = (e) => callback(e.target.result); 
+        reader.readAsDataURL(file); 
+      } 
+      event.target.value = ''; 
+    }
     
-    function applyCustomBg(url) { if(!url) { showToast("宝宝，壁纸链接不能为空哦！🥺"); return; } document.documentElement.style.setProperty('--custom-bg', `url('${url}')`); document.getElementById('bgUrlInput').value = ''; closeModal(); showToast("壁纸已临时应用，别忘了点Save保存哦！✨");}
-    function resetBg() { document.documentElement.style.setProperty('--custom-bg', 'none'); closeModal(); showToast("已恢复默认主题色，记得Save哦 🎨");}
-    function applyCustomIcon(url) { if(!url) { showToast("宝宝，图标链接不能为空哦！🥺"); return; } const appId = hiddenInput.value; const iconContainer = document.getElementById(appId); iconContainer.querySelector('.custom-icon-img').src = url; iconContainer.querySelector('.custom-icon-img').style.display = 'block'; iconContainer.querySelector('svg').style.display = 'none'; document.getElementById('iconUrlInput').value = ''; closeModal(); showToast("图标更换成功，记得Save哦！✨");}
-    function resetIcon() { const appId = hiddenInput.value; const iconContainer = document.getElementById(appId); iconContainer.querySelector('.custom-icon-img').src = ''; iconContainer.querySelector('.custom-icon-img').style.display = 'none'; iconContainer.querySelector('svg').style.display = 'block'; closeModal(); showToast("已恢复线稿，记得Save哦 ✏️");}
+    function applyCustomBg(url) { 
+      if (!url) { showToast("宝宝，壁纸链接不能为空哦！🥺"); return; } 
+      document.documentElement.style.setProperty('--custom-bg', `url('${url}')`); 
+      document.getElementById('bgUrlInput').value = ''; 
+      closeModal(); showToast("壁纸已临时应用，别忘了点Save保存哦！✨");
+    }
+    
+    function resetBg() { document.documentElement.style.setProperty('--custom-bg', 'none'); closeModal(); showToast("已恢复默认主题色，记得Save哦 🎨"); }
+    
+    function applyCustomIcon(url) { 
+      if (!url) { showToast("宝宝，图标链接不能为空哦！🥺"); return; } 
+      const appId = hiddenInput.value; 
+      const iconContainer = document.getElementById(appId); 
+      iconContainer.querySelector('.custom-icon-img').src = url; 
+      iconContainer.querySelector('.custom-icon-img').style.display = 'block'; 
+      iconContainer.querySelector('svg').style.display = 'none'; 
+      document.getElementById('iconUrlInput').value = ''; 
+      closeModal(); showToast("图标更换成功，记得Save哦！✨");
+    }
+    
+    function resetIcon() { 
+      const appId = hiddenInput.value; 
+      const iconContainer = document.getElementById(appId); 
+      iconContainer.querySelector('.custom-icon-img').src = ''; 
+      iconContainer.querySelector('.custom-icon-img').style.display = 'none'; 
+      iconContainer.querySelector('svg').style.display = 'block'; 
+      closeModal(); showToast("已恢复线稿，记得Save哦 ✏️");
+    }
 
-    // ==== 字体收藏夹系统 ====
     function renderSavedFonts() {
       let savedFonts = JSON.parse(localStorage.getItem('myOS_customFonts')) || [];
       const listContainer = document.getElementById('customFontsList');
-      if(!listContainer) return;
+      if (!listContainer) return;
       listContainer.innerHTML = ''; 
-      if(savedFonts.length > 0) { let divider = document.createElement('div'); divider.className = 'divider'; divider.textContent = '--- 我的私人收藏夹 ---'; listContainer.appendChild(divider); }
+      
+      if (savedFonts.length > 0) { 
+        let divider = document.createElement('div'); divider.className = 'divider'; 
+        divider.textContent = '--- 我的私人收藏夹 ---'; listContainer.appendChild(divider); 
+      }
+      
       savedFonts.forEach((fontObj, index) => {
         let itemDiv = document.createElement('div'); itemDiv.className = 'custom-font-item';
         let btn = document.createElement('button'); btn.className = 'preset-btn'; btn.textContent = '⭐ ' + fontObj.name;
         btn.onclick = () => { applySavedFont(fontObj); showToast("已应用字体：" + fontObj.name + "，记得Save哦！"); };
+        
         let delBtn = document.createElement('button'); delBtn.className = 'del-btn'; delBtn.innerHTML = '×'; delBtn.title = "删除预设";
         delBtn.onclick = () => deleteSavedFont(index);
+        
         itemDiv.appendChild(btn); itemDiv.appendChild(delBtn); listContainer.appendChild(itemDiv);
       });
     }
@@ -471,24 +507,29 @@
       let savedFonts = JSON.parse(localStorage.getItem('myOS_customFonts')) || [];
       let nameInput = document.getElementById('fontNameInput').value.trim();
       let urlInput = document.getElementById('fontUrlInput').value.trim();
-      if(!urlInput) { showToast("宝宝，需要填入字体直链才能保存哦！🥺"); return; }
+      
+      if (!urlInput) { showToast("宝宝，需要填入字体直链才能保存哦！🥺"); return; }
+      
       let fontName = nameInput || ('自定义字体 ' + (savedFonts.length + 1));
       let fontId = 'CustomFont_' + Date.now(); 
       let newFontObj = { name: fontName, url: urlInput, id: fontId };
+      
       savedFonts.push(newFontObj); localStorage.setItem('myOS_customFonts', JSON.stringify(savedFonts));
       document.getElementById('fontNameInput').value = ''; document.getElementById('fontUrlInput').value = '';
+      
       renderSavedFonts(); applySavedFont(newFontObj);
       showToast("URL预设存好了，别忘了点屏幕右上角的Save保存全局设置哦！🎉");
     }
 
     function applySavedFont(fontObj) {
       let styleId = 'style_' + fontObj.id;
-      if(!document.getElementById(styleId)) {
+      if (!document.getElementById(styleId)) {
         let style = document.createElement('style'); style.id = styleId;
         style.textContent = `@font-face { font-family: '${fontObj.id}'; src: url('${fontObj.url}'); }`;
         document.head.appendChild(style);
       }
-      document.documentElement.style.setProperty('--ui-font', `'${fontObj.id}', "Noto Serif SC", serif`); closeModal();
+      document.documentElement.style.setProperty('--ui-font', `'${fontObj.id}', "Noto Serif SC", serif`);
+      closeModal();
     }
 
     function resetToDefaultFont() {
